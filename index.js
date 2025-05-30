@@ -32,10 +32,25 @@ async function run() {
     // create job api
 
     app.get('/jobs', async(req, res) => {
-        const jobs = req.body;
-        const result = await jobCollection.find().toArray()
+      const email = req.query.email;
+      const query ={}
+      if(email){
+        query.hr_email = email
+      }
+       
+        const result = await jobCollection.find(query).toArray()
         res.send(result)
     })
+// could be done but should not be done
+    // app.get('/jobsByEmailAddress', async(req, res)=>{
+    //   const email = req.query.email;
+    //   const query = {
+    //     hr_email : email
+    //   }
+    //   const result = await jobCollection.findOne(query)
+    //   res.send(result)
+
+    // })
     app.get('/jobs/:id', async(req, res)=>{
         const id = req.params.id;
         const query ={
@@ -43,6 +58,16 @@ async function run() {
         }
         const result = await jobCollection.findOne(query)
         res.send(result)
+    })
+
+   
+    
+
+    app.post('/jobs', async(req, res)=>{
+      const newJob =req.body;
+      const result = await jobCollection.insertOne(newJob);
+      res.send(result)
+
     })
     // application api
     app.get('/applications', async(req, res)=>{
